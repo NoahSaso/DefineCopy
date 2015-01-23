@@ -10,7 +10,6 @@ static void reloadPrefs() {
 	enabled = (!enabledBoolRef ? YES : CFBooleanGetValue(enabledBoolRef));
 }
 
-%group UIKit
 %hook UITextField
 
 - (void)_define:(id)arg1 {
@@ -48,13 +47,11 @@ static void reloadPrefs() {
 }
 
 %end
-%end
 
 @interface WKContentView : UITextView
 - (id)selectedText;
 @end
 
-%group WebKit
 %hook WKContentView
 
 - (void)_define:(id)arg1 {
@@ -65,14 +62,8 @@ static void reloadPrefs() {
 }
 
 %end
-%end
 
 %ctor {
-	if(Xeq([[NSBundle mainBundle] bundleIdentifier], @"com.apple.UIKit"))
-		%init(UIKit);
-	else
-		%init(WebKit);
-
 	reloadPrefs();
 	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL,
         (CFNotificationCallback)reloadPrefs,
